@@ -38,7 +38,11 @@ $ python gui.py
 
 ### movement suggestion
 
+shows available movements for a selected piece
 
+<p align="center">
+  <img src="assets/selected.PNG" height="350"/>
+</p>
 
 ## License
 

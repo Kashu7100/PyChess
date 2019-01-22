@@ -27,6 +27,11 @@ $ python setup.py install
 
 ### appearance
 
+```
+$ cd pychess
+$ python gui.py
+```
+
 <p align="center">
   <img src="assets/chess.PNG" height="350"/>
 </p>

@@ -14,3 +14,8 @@ $ python setup.py install
 
 ## Features
 
+
+
+## License
+
+Source codes in the repository follows [MIT](http://www.opensource.org/licenses/MIT) license.

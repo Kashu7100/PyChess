@@ -1,4 +1,7 @@
-# PyChess
+<p align="center">
+  <img src="assets/logo.png"/>
+</p>
+
 PyChess is a pure Python chess library with move generation and move validation as well as GUI.
 PyChess uses a bitboard representation for its internal calculations.
 

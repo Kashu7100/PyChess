@@ -27,7 +27,7 @@ $ python setup.py install
 ## Features
 
 ### appearance
-
+ 
 ```
 $ cd pychess
 $ python gui.py

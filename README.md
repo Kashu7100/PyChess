@@ -40,6 +40,11 @@ $ python gui.py
 ### movement suggestion
 
 shows available movements for a selected piece
+```python
+c = Chess()
+# get available movements 
+c.nextMoves(c.board,c.white)
+```
 
 <p align="center">
   <img src="assets/selected.PNG" height="350"/>

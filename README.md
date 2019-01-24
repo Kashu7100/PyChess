@@ -11,8 +11,8 @@ PyChess uses a bitboard representation for its internal calculations.
 | ---- | --- |
 | **pychess** | a chess library |
 | **pychess.chess** | the main chess class with bitboard representation dealing the all calculations |
-| **pychess.gui** | draws beautiful GUI using just tkinter for pychess |
-| **pychess.img** | images used for GUI is in here |
+| **pychess.gui** | draws beautiful GUI using only tkinter for pychess |
+| **pychess.img** | images used for GUI are in here |
 
 ## Requirements
 

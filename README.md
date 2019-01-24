@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.png" height="300"/>
+  <img src="assets/logo.png" height="150"/>
 </p>
 
 PyChess is a pure Python chess library with move generation and move validation.

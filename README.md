@@ -31,11 +31,8 @@ $ chess
 ```
 
 <p align="center">
-  <img src="assets/chess.PNG"/>
-</p>
-
-<p align="center">
-  <img src="assets/selected.PNG"/>
+  <img src="assets/chess.PNG" width="350" height="350"/>
+  <img src="assets/selected.PNG" width="350" height="350"/>
 </p>
 
 ## License

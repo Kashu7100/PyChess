@@ -15,7 +15,11 @@ PyChess uses a bitboard representation for its internal calculations.
 | **pychess.img** | images used for GUI |
 
 ## Install 
+```bash
+$ pip install -v git+https://github.com/Kashu7100/PyChess.git
 ```
+or
+```bash
 $ python setup.py install
 ```
 

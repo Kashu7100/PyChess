@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*- 
 from chess import *
 from tkinter import Tk, Canvas, Button, BOTH, TOP, BOTTOM, PhotoImage, NW, Label, Menu
 from tkinter.ttk import Frame

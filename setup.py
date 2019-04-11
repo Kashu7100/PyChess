@@ -10,4 +10,5 @@ setup(name='PyChess',
       entry_points="""
       [console_scripts]
       chess = pychess.gui:main
-      """,)
+      """,
+      include_package_data=True,)

@@ -32,6 +32,8 @@ $ chess
 
 <p align="center">
   <img src="assets/chess.PNG" width="350" height="350"/>
+</p>
+<p align="center">
   <img src="assets/selected.PNG" width="350" height="350"/>
 </p>
 

@@ -14,11 +14,15 @@ PyChess uses a bitboard representation for its internal calculations.
 | **pychess.gui** | draws beautiful GUI using tkinter for pychess |
 | **pychess.img** | images used for GUI |
 
+## Install 
+```
+$ python setup.py install
+```
+
 ## Play Game
  
 ```
-$ cd pychess
-$ python gui.py
+$ chess
 ```
 
 <p align="center">

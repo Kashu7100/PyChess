@@ -171,8 +171,11 @@ class ChessGUI(Frame):
             self.victory('Black')
         self.master.mainloop()
 
-if __name__ == '__main__':
+def main():
     root = Tk()
     c = Chess()
     gui = ChessGUI(root,c)
     gui.main()
+        
+if __name__ == '__main__':
+    main()

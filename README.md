@@ -9,19 +9,12 @@ PyChess uses a bitboard representation for its internal calculations.
 
 | Component | Description |
 | ---- | --- |
-| **pychess** | a chess library |
+| **pychess** | a python chess library |
 | **pychess.chess** | the main chess class with bitboard representation dealing the all calculations |
-| **pychess.gui** | draws beautiful GUI using only tkinter for pychess |
-| **pychess.img** | images used for GUI are in here |
+| **pychess.gui** | draws beautiful GUI using tkinter for pychess |
+| **pychess.img** | images used for GUI |
 
-## Installation
-```
-$ python setup.py install
-```
-
-## Features
-
-### appearance
+## Run Program
  
 ```
 $ cd pychess
@@ -31,15 +24,6 @@ $ python gui.py
 <p align="center">
   <img src="assets/chess.PNG" height="350"/>
 </p>
-
-### movement suggestion
-
-shows available movements for a selected piece
-```python
-c = Chess()
-# get available movements 
-c.nextMoves(c.board,c.white)
-```
 
 <p align="center">
   <img src="assets/selected.PNG" height="350"/>

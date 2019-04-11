@@ -104,7 +104,7 @@ class ChessGUI(Frame):
         if 278 < x < 335 and 394 < y < 410:
             # New Game
             self.canvas.delete('welcome')
-            self.game.initBoard()
+            self.game.initBoard(self.game.board)
             self.main()
 
     def turnGUI(self):

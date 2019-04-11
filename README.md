@@ -14,7 +14,7 @@ PyChess uses a bitboard representation for its internal calculations.
 | **pychess.gui** | draws beautiful GUI using tkinter for pychess |
 | **pychess.img** | images used for GUI |
 
-## Run Program
+## Play Game
  
 ```
 $ cd pychess

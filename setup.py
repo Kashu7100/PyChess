@@ -6,4 +6,8 @@ setup(name='PyChess',
       author='Kashu',
       author_email='echo_six0566@yahoo.co.jp',
       url='https://github.com/Kashu7100/PyChess',
-      packages=find_packages(),)
+      packages=find_packages(),
+      entry_points="""
+      [console_scripts]
+      chess = pychess.gui:main
+      """,)

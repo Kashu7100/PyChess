@@ -20,7 +20,8 @@ $ python setup.py install
 ```
 
 ## Play Game
- 
+Once PyChess is installed, one can use `chess` command to run the game.
+
 ```
 $ chess
 ```

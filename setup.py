@@ -11,4 +11,8 @@ setup(name='PyChess',
       [console_scripts]
       chess = pychess.gui:main
       """,
-      include_package_data=True,)
+      include_package_data=True,
+      install_requires=[
+            'Pillow',
+            'numpy'
+      ],)

@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*- 
 import numpy as np
-import random
 import os
 import sys
-from math import inf
-import time
+import gc
 
 path = os.path.dirname(os.path.abspath(__file__))
 
@@ -51,6 +49,7 @@ class Chess(object):
         self.en_passant = 13
         self.initBoard(self.board)
         self.initLookupTable()
+        self.history.append(self.board)
 
     def save(self, filename='log.txt'):
         print('[*] Saving history...')
@@ -471,6 +470,7 @@ class Chess(object):
         opponent = self.getPiece(board,move[1])
         if self.getColor(piece) is not player:
             raise Exception('Invalid movement.',move)
+            #return None
         # capture
         if opponent != -1:
             board[opponent] ^= self.posToint(move[1])
@@ -594,76 +594,8 @@ class Chess(object):
                 nextState = self.move(board.copy(),player,m)
                 if not self.isCheck(nextState, player):
                     moves.append(m)
+        gc.collect()
         return moves
-
-    def nextStates(self, board, player):
-        states = []
-        for i in range(64):
-            piece = self.getPiece(board,i)
-            if piece == self.empty or self.getColor(piece) != player:
-                continue
-            elif piece in [self.wKing, self.bKing]:
-                movement = self.movementKing(i,board,player)
-            elif piece in [self.wBishops, self.bBishops]:
-                movement = self.movementBishop(i,board,player)
-            elif piece in [self.wKnights, self.bKnights]:
-                movement = self.movementKnight(i,board,player)
-            elif piece in [self.wRooks, self.bRooks]:
-                movement = self.movementRook(i,board,player)
-            elif piece in [self.wQueen, self.bQueen]:
-                movement = self.movementQueen(i,board,player)
-            elif piece in [self.wPawns, self.bPawns]:
-                movement = self.movementPawn(i,board,player)
-            for m in self.getMoves(i,movement):
-                nextState = self.move(board.copy(),player,m)
-                if not self.isCheck(nextState, player):
-                    states.append(nextState)
-        return states
-
-    def nextMovesSimple(self, board, player):
-        moves = []
-        for i in range(64):
-            piece = self.getPiece(board,i)
-            if piece == self.empty or self.getColor(piece) != player:
-                continue
-            elif piece in [self.wKing, self.bKing]:
-                movement = self.movementKing(i,board,player)
-            elif piece in [self.wBishops, self.bBishops]:
-                movement = self.movementBishop(i,board,player)
-            elif piece in [self.wKnights, self.bKnights]:
-                movement = self.movementKnight(i,board,player)
-            elif piece in [self.wRooks, self.bRooks]:
-                movement = self.movementRook(i,board,player)
-            elif piece in [self.wQueen, self.bQueen]:
-                movement = self.movementQueen(i,board,player)
-            elif piece in [self.wPawns, self.bPawns]:
-                movement = self.movementPawn(i,board,player)
-            for m in self.getMoves(i,movement):
-                moves.append(m)
-        return moves
-    
-    def nextStatesSimple(self, board, player):
-        states = []
-        for i in range(64):
-            piece = self.getPiece(board,i)
-            if piece == self.empty or self.getColor(piece) != player:
-                continue
-            elif piece in [self.wKing, self.bKing]:
-                movement = self.movementKing(i,board,player)
-            elif piece in [self.wBishops, self.bBishops]:
-                movement = self.movementBishop(i,board,player)
-            elif piece in [self.wKnights, self.bKnights]:
-                movement = self.movementKnight(i,board,player)
-            elif piece in [self.wRooks, self.bRooks]:
-                movement = self.movementRook(i,board,player)
-            elif piece in [self.wQueen, self.bQueen]:
-                movement = self.movementQueen(i,board,player)
-            elif piece in [self.wPawns, self.bPawns]:
-                movement = self.movementPawn(i,board,player)
-            for m in self.getMoves(i,movement):
-                nextState = self.move(board.copy(),player,m)
-                states.append(nextState)
-        return states
 
     def finished(self, board, player):
         if player == self.white and board[self.wKing] == np.uint(0):

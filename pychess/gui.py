@@ -1,28 +1,27 @@
 # -*- coding: utf-8 -*- 
 from .chess import *
-from tkinter import Tk, Canvas, Button, BOTH, TOP, BOTTOM, PhotoImage, NW, Label, Menu
+from tkinter import Tk, Canvas, Button, BOTH, BOTTOM, PhotoImage
 from tkinter.ttk import Frame
 from PIL import Image, ImageTk
 import os
-from time import sleep
+import gc
 
 path = os.path.dirname(os.path.abspath(__file__))
 
 class ChessGUI(Frame):
     def __init__(self, master, game):
+        super().__init__(master)
         self.game = game
         self.dark_cell = '#2c1b0f'
         self.light_cell = '#e7cba3'
         self.selected_cell = '#ecf27b'
         self.path_cell = '#82f47e'
         self.pieces = {}
-        self.arrow = {}
         self.master = master
         self.player = 1
         self.moves_tmp = []
         self.input = []
         self.turnend = False
-        super().__init__(master)
         self.__initUI()
         self.welcome()
     
@@ -74,10 +73,9 @@ class ChessGUI(Frame):
 
     def draw_pieces(self, board, flip=False):
         self.canvas.delete('piece')
-        b = board.copy()
         sym = ['wKing','wQueen','wRook','wKnight','wBishop','wPawn','bKing','bQueen','bRook','bKnight','bBishop','bPawn']
         for piece in range(12):
-            tmp = int(b[piece])
+            tmp = int(board[piece])
             for num in reversed(range(64)):
                 if tmp//pow(2,num) == 1:
                     n = int(self.game.ref['BoardNum'][num])
@@ -109,7 +107,6 @@ class ChessGUI(Frame):
             self.main()
 
     def turnGUI(self):
-        self.moves_tmp = self.game.nextMoves(self.game.board,self.player) 
         while not self.turnend:
             self.canvas.unbind("<Button-1>")
             self.canvas.bind("<Button-1>", self.__click_turn)
@@ -145,23 +142,19 @@ class ChessGUI(Frame):
         if 260 < x < 352 and 364 < y < 378:
             # New Game
             self.canvas.delete('victory')
-            self.game.resetBoard()
+            self.game.initBoard()
             self.main()            
         elif 290 < x < 324 and 427 < y < 439:
             # Exit
             self.master.quit()
 
-    def main(self, turn1=None, turn2=None):
-        while not self.game.finished(self.game.board, self.player) or not self.game.nextMoves(self.game.board,self.player):
+    def main(self):
+        while not self.game.finished(self.game.board, self.player):
             self.master.update()
-            if self.player == self.game.white and turn1 is not None:
-                if not turn1(self.player,self.update_board):
-                    break
-            elif self.player == self.game.black and turn2 is not None:
-                if not turn2(self.player,self.update_board):
-                    break
-            else:
-                self.turnGUI()
+            self.moves_tmp = self.game.nextMoves(self.game.board,self.player) 
+            if not self.moves_tmp:
+                break
+            self.turnGUI()
             self.draw_pieces(self.game.board)
             self.player *= -1
         self.player *= -1
@@ -169,12 +162,11 @@ class ChessGUI(Frame):
             self.victory('White')
         if self.player == self.game.black:
             self.victory('Black')
+        gc.collect()
         self.master.mainloop()
 
 def main():
-    root = Tk()
-    c = Chess()
-    gui = ChessGUI(root,c)
+    gui = ChessGUI(Tk(),Chess())
     gui.main()
         
 if __name__ == '__main__':

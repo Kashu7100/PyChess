@@ -142,7 +142,7 @@ class ChessGUI(Frame):
         if 260 < x < 352 and 364 < y < 378:
             # New Game
             self.canvas.delete('victory')
-            self.game.initBoard()
+            self.game.initBoard(self.game.board)
             self.main()            
         elif 290 < x < 324 and 427 < y < 439:
             # Exit

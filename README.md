@@ -20,6 +20,8 @@ $ pip install -v git+https://github.com/Kashu7100/PyChess.git
 ```
 or
 ```bash
+$ git clone https://github.com/Kashu7100/PyChess.git
+$ cd PyChess
 $ python setup.py install
 ```
 
@@ -32,8 +34,7 @@ $ chess
 
 <p align="center">
   <img src="assets/chess.PNG" width="350" height="350"/>
-</p>
-<p align="center">
+
   <img src="assets/selected.PNG" width="350" height="350"/>
 </p>
 

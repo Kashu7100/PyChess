@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*- 
-from .chess import *
+from .alpha_zero.env import ChessEnv
+from .alpha_zero.manager import get_player
+from .alpha_zero.config import Config, PlayWithHumanConfig
 from tkinter import Tk, Canvas, Button, BOTH, BOTTOM, PhotoImage
 from tkinter.ttk import Frame
 from PIL import Image, ImageTk
@@ -9,30 +11,33 @@ import gc
 path = os.path.dirname(os.path.abspath(__file__))
 
 class ChessGUI(Frame):
-    def __init__(self, master, game):
+    def __init__(self, master, env):
         super().__init__(master)
-        self.game = game
+        config = Config()
+        PlayWithHumanConfig().update_play_config(config.play)
+        self.agent = get_player(config)
+        self.env = env.reset()
         self.dark_cell = '#2c1b0f'
         self.light_cell = '#e7cba3'
         self.selected_cell = '#ecf27b'
         self.path_cell = '#82f47e'
         self.pieces = {}
         self.master = master
-        self.player = 1
+        self.turn = 1
         self.moves_tmp = []
-        self.input = []
+        self.input = None
         self.turnend = False
-        self.__initUI()
+        self.__initUI__()
         self.welcome()
     
-    def __initUI(self):
-        self.master.title("Python GUI Chess") 
+    def __initUI__(self):
+        self.master.title("Python Chess") 
         self.pack(fill=BOTH, expand=1)
         self.canvas = Canvas(self, width=64*8+100, height=64*8+100)
         self.canvas.pack(fill=BOTH, side=BOTTOM)
         self.load_image()
         self.init_board()
-        self.draw_pieces(self.game.board)
+        self.draw_pieces(self.env.bitboard())
         
     def load_image(self):
         for name in ['wPawn', 'wRook', 'wKnight', 'wBishop', 'wQueen', 'wKing', 'bPawn', 'bRook', 'bKnight', 'bBishop', 'bQueen', 'bKing']:
@@ -54,22 +59,6 @@ class ChessGUI(Frame):
         for w in [22,78+64*8]:
             for i in range(8):
                 self.canvas.create_text(w,80+64*i,text=str(8-i), font=('Arial', 14),fill='#636363',tags=('rank'))
-        
-    def update_board(self, r, c):
-        if 0 <= r < 8 and 0 <= c < 8:
-            self.canvas.delete('selected')
-            self.canvas.delete('path')
-            n = 8*(7-r)+c
-            moves = [m for m in self.moves_tmp if m[0] == n]
-            self.canvas.create_rectangle(50+c*64, 50+r*64, 50+(c+1)*64, 50+(r+1)*64, fill=self.selected_cell, tags=('selected'))
-            if bool(moves):
-                for move in moves:
-                    i = self.game.getFileIdx(move[1])
-                    j = 7-self.game.getRankIdx(move[1])
-                    self.canvas.create_rectangle(50+i*64, 50+j*64, 50+(i+1)*64, 50+(j+1)*64, fill=self.path_cell, tags=('path'))
-                self.draw_pieces(self.game.board)
-            return moves
-        return []
 
     def draw_pieces(self, board, flip=False):
         self.canvas.delete('piece')
@@ -78,10 +67,10 @@ class ChessGUI(Frame):
             tmp = int(board[piece])
             for num in reversed(range(64)):
                 if tmp//pow(2,num) == 1:
-                    n = int(self.game.ref['BoardNum'][num])
+                    n = int(self.env.board_idx[num])
                     if not flip:
-                        i = self.game.getFileIdx(n)
-                        j = 7-self.game.getRankIdx(n)
+                        i = self.env.getFileIdx(n)
+                        j = 7-self.env.getRankIdx(n)
                     else:
                         i = 7-self.getFileIdx(n)
                         j = self.getRankIdx(n)
@@ -103,7 +92,7 @@ class ChessGUI(Frame):
         if 278 < x < 335 and 394 < y < 410:
             # New Game
             self.canvas.delete('welcome')
-            self.game.initBoard(self.game.board)
+            self.env.reset()
             self.main()
 
     def turnGUI(self):
@@ -117,24 +106,48 @@ class ChessGUI(Frame):
         x, y = event.x, event.y
         j = (x-50)//64
         i = (y-50)//64
-        n = 8*(7-i)+j
-        if len([m for m in self.input if m[1] == n]) == 1:
-            move = [m for m in self.input if m[1] == n][0]
-            self.game.move(self.game.board, self.player, move)
-            self.input = []
-            self.draw_pieces(self.game.board)
+        if self.input is not None:
+            n = self.update_board(i,j)   
+            words = self.env.num_to_name[self.input]+self.env.num_to_name[n]
+            print(words)
+            try:
+                self.env.step(words, True)
+            except:
+                self.input = None
+                self.canvas.delete('selected')
+                return 
+            self.input = None
+            self.draw_pieces(self.env.bitboard())
             self.turnend = True
             return                
         else:
-            self.input = self.update_board(i,j)   
+            self.input = self.update_board(i,j, False)   
+
+    def update_board(self, r, c, moved=True):
+        if 0 <= r < 8 and 0 <= c < 8:
+            self.canvas.delete('selected')
+            # self.canvas.delete('path')
+            n = 8*(7-r)+c
+            if not moved:
+                self.canvas.create_rectangle(50+c*64, 50+r*64, 50+(c+1)*64, 50+(r+1)*64, fill=self.selected_cell, tags=('selected'))
+            else:
+                self.canvas.create_rectangle(50+c*64, 50+r*64, 50+(c+1)*64, 50+(r+1)*64, fill=self.path_cell, tags=('selected'))
+            # if bool(moves):
+            #     for move in moves:
+            #         i = self.env.getFileIdx(move[1])
+            #         j = 7-self.env.getRankIdx(move[1])
+            #         self.canvas.create_rectangle(50+i*64, 50+j*64, 50+(i+1)*64, 50+(j+1)*64, fill=self.path_cell, tags=('path'))
+            self.draw_pieces(self.env.bitboard())
+            return n
+        return None
 
     def victory(self, name):
         self.canvas.unbind("<Button-1>")
         self.canvas.bind("<Button-1>", self.__click_victory)
         self.canvas.create_oval(50+64*1.5, 50+64*1.5, 50+64*6.5, 50+64*6.5,tags="victory", fill="orange", outline="white")
-        self.canvas.create_text(50+64*4, 50+64*4,text="%s win!" %name, tags="victory",fill="white", font=("Arial", 32))
-        self.canvas.create_text(50+64*4, 50+64*5,text="New Game", tags="victory",fill="white", font=("Arial", 14))
-        self.canvas.create_text(50+64*4, 50+64*6,text="Exit", tags="victory",fill="white", font=("Arial", 14))
+        self.canvas.create_text(50+64*4, 50+64*4,text=f"{name}", tags="victory",fill="white", font=("Arial", 32))
+        self.canvas.create_text(50+64*4, 50+64*5,text="New Game", tags="victory",fill="white", font=("Arial", 16))
+        self.canvas.create_text(50+64*4, 50+64*6,text="Exit", tags="victory",fill="white", font=("Arial", 16))
         self.master.mainloop()
     
     def __click_victory(self, event):
@@ -142,33 +155,37 @@ class ChessGUI(Frame):
         if 260 < x < 352 and 364 < y < 378:
             # New Game
             self.canvas.delete('victory')
-            self.game.initBoard(self.game.board)
-            self.draw_pieces(self.game.board)
-            self.player = 1
+            self.env.reset()
+            self.draw_pieces(self.env.bitboard())
+            self.turn = 1
             self.main()            
         elif 290 < x < 324 and 427 < y < 439:
             # Exit
             self.master.quit()
+            self.master.destroy()
 
     def main(self):
-        while not self.game.finished(self.game.board, self.player):
+        while True:
             self.master.update()
-            self.moves_tmp = self.game.nextMoves(self.game.board,self.player) 
-            if not self.moves_tmp:
+            if self.env.winner is not None:
+                self.victory(f"{str(self.env.winner).split('.')[1]} wins!")
                 break
-            self.turnGUI()
-            self.draw_pieces(self.game.board)
-            self.player *= -1
-        self.player *= -1
-        if self.player == self.game.white:
-            self.victory('White')
-        if self.player == self.game.black:
-            self.victory('Black')
-        gc.collect()
+            if self.turn == 1:
+                self.turnGUI()
+                self.turn *= -1
+            else:
+                action = self.agent.action(self.env, False)
+                n = self.env.name_to_num[action[2:4]]
+                i = self.env.getFileIdx(n)
+                j = 7-self.env.getRankIdx(n)
+                self.update_board(j, i)
+                self.env.step(action, True)
+                self.turn *= -1
+            self.draw_pieces(self.env.bitboard())
         self.master.mainloop()
 
 def main():
-    gui = ChessGUI(Tk(),Chess())
+    gui = ChessGUI(Tk(),ChessEnv())
     gui.main()
         
 if __name__ == '__main__':

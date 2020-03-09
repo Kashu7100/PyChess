@@ -2,8 +2,7 @@
   <img src="assets/logo.png"/>
 </p>
 
-PyChess is a pure Python chess library with move generation and move validation.
-PyChess uses a bitboard representation for its internal calculations.
+PyChess is a pure Python chess library with pretrained AlphaZero.
 
 ## Installation 
 ```bash
@@ -25,8 +24,6 @@ $ chess
 
 <p align="center">
   <img src="assets/chess.PNG" width="350" height="350"/>
-
-  <img src="assets/selected.PNG" width="350" height="350"/>
 </p>
 
 ## License

@@ -1,1 +1,2 @@
 include pychess/img/*.png
+include pychess/pretrained/*

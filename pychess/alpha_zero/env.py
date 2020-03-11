@@ -2,6 +2,7 @@ import enum
 import chess.pgn
 import numpy as np
 import copy
+import sys
 
 # noinspection PyArgumentList
 Winner = enum.Enum("Winner", "black white draw")
@@ -131,7 +132,7 @@ class ChessEnv:
 
     def render(self):
         print("\n")
-        print(self.board)
+        print(str(self.board))
         print("\n")
 
     def bitboard(self):

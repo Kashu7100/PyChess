@@ -1,4 +1,7 @@
 __pycache__/
 *.pyc
 *.so
-
+PyChess.egg-info/
+build/
+dist/
+.gitignore

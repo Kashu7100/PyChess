@@ -1,5 +1,5 @@
 import argparse
-import sys
+import sys, os
 from .agent.player import ChessPlayer
 from .agent.model import ChessModel
 from .config import Config, PlayWithHumanConfig
@@ -39,31 +39,37 @@ def play(config: Config):
     me_player = get_player(config)
 
     turn = 1
+    os.system('cls' if os.name == 'nt' else 'clear')
+    env.render()
     while True:
-        env.render()
         if env.winner is not None:
-            print(f"winner is {env.winner}")
+            print(f"[*] winner is {env.winner}")
             break
         if turn == 1:
+            print('[*] commands: newgame, help, quit')
             words = input("Player: ")
             if words == "newgame":
                 env.reset()
             elif words == "help":
                 action = me_player.action(env, False)
-                print(f"bestmove {action}")
+                print(f"[*] bestmove: {action}")
             elif words == "quit":
                 break
             else:
                 try:
                     env.step(words, True)
                     turn *= -1
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    env.render()
+                    print(f"CPU: thinking...")
                 except:
-                    print("bad input")
+                    print("[*] bad input, try again")
         else:
             action = me_player.action(env, False)
-            print(f"CPU: {action}")
             env.step(action, True)
             turn *= -1
+            os.system('cls' if os.name == 'nt' else 'clear')
+            env.render()
 
 def get_player(config):
     model = ChessModel(config)

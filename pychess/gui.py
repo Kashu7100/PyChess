@@ -5,16 +5,18 @@ from .alpha_zero.config import Config, PlayWithHumanConfig
 from tkinter import Tk, Canvas, Button, BOTH, BOTTOM, PhotoImage
 from tkinter.ttk import Frame
 from PIL import Image, ImageTk
-import os
-import gc
+import os, sys
+import multiprocessing as mp
+import argparse
 
 path = os.path.dirname(os.path.abspath(__file__))
 
 class ChessGUI(Frame):
-    def __init__(self, master, env):
+    def __init__(self, master, env, args):
         super().__init__(master)
         config = Config()
         PlayWithHumanConfig().update_play_config(config.play)
+        self.args = args
         self.agent = get_player(config)
         self.env = env.reset()
         self.dark_cell = '#2c1b0f'
@@ -93,7 +95,7 @@ class ChessGUI(Frame):
             # New Game
             self.canvas.delete('welcome')
             self.env.reset()
-            self.main()
+            self.main(self.args)
 
     def turnGUI(self):
         while not self.turnend:
@@ -164,13 +166,19 @@ class ChessGUI(Frame):
             self.master.quit()
             self.master.destroy()
 
-    def main(self):
+    def main(self, args):
         while True:
             self.master.update()
             if self.env.winner is not None:
                 self.victory(f"{str(self.env.winner).split('.')[1]} wins!")
                 break
-            if self.turn == 1:
+            if (self.turn == 1 or args.mode == 2) and args.mode != 1:
+                if args.assist:
+                    action = self.agent.action(self.env, False)
+                    n = self.env.name_to_num[action[2:4]]
+                    i = self.env.getFileIdx(n)
+                    j = 7-self.env.getRankIdx(n)
+                    self.update_board(j, i)
                 self.turnGUI()
                 self.turn *= -1
             else:
@@ -185,8 +193,19 @@ class ChessGUI(Frame):
         self.master.mainloop()
 
 def main():
-    gui = ChessGUI(Tk(),ChessEnv())
-    gui.main()
-        
+    parser = argparse.ArgumentParser(description='PyChess: Python Chess with pretraind AlphaZero')
+    parser.add_argument('-g', '--gui', type=bool, default=True, help='Use GUI version of PyChess. Default: True')
+    parser.add_argument('-i', '--assist', type=bool, default=False, help='Enable AI assist for human player. Default: False')
+    parser.add_argument('-m', '--mode', type=int, default=0, choices=[0,1,2], help='Play mode: 0 - human vs AI, 1 - AI vs AI, 2 - human vs human')
+    args = parser.parse_args()
+
+    mp.set_start_method('spawn')
+    sys.setrecursionlimit(10000)
+    if args.gui:
+        gui = ChessGUI(Tk(),ChessEnv(), args)
+    else:    
+        from .alpha_zero import manager
+        manager.start()
+
 if __name__ == '__main__':
     main()

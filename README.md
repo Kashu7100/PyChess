@@ -19,7 +19,7 @@ $ python setup.py install
 Once PyChess is installed, one can use `chess` command to run the game.
 
 ```
-$ chess
+$ chess --help
 ```
 
 <p align="center">

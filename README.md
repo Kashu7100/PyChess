@@ -2,7 +2,7 @@
   <img src="assets/logo.png"/>
 </p>
 
-PyChess is a pure Python chess library with pretrained AlphaZero.
+PyChess is a pure Python chess library with pretrained AlphaZero model. 
 
 ## Installation 
 1) Clone this repository

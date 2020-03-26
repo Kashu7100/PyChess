@@ -5,13 +5,17 @@
 PyChess is a pure Python chess library with pretrained AlphaZero.
 
 ## Installation 
-```bash
-$ pip install -v git+https://github.com/Kashu7100/PyChess.git
-```
-or
+1) Clone this repository
 ```bash
 $ git clone https://github.com/Kashu7100/PyChess.git
 $ cd PyChess
+```
+2) Creat Environment
+```bash
+$ conda env create -f environment.yml
+```
+3) Install PyChess
+```bash
 $ python setup.py install
 ```
 

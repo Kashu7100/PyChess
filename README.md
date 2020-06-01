@@ -20,9 +20,10 @@ $ python setup.py install
 ```
 
 ## Play Game
-Once PyChess is installed, one can use `chess` command to run the game.
+Once PyChess is installed, activate your conda environment and use `chess` command to run the game.
 
 ```
+$ conda activate tf
 $ chess
 ```
 
